@@ -1,7 +1,8 @@
 <script setup>
-import { ref, onBeforeMount, onMounted, onBeforeUpdate, onUpdated, onBeforeUnmount, onUnmounted } from 'vue'
+import { ref, onBeforeMount, onMounted, onBeforeUpdate, onUpdated, onBeforeUnmount, onUnmounted, watch, reactive } from 'vue'
 import { storeToRefs } from 'pinia';
 import { useCounterStore } from '../store/counter';
+import MyCom from './MyCom.vue';
 
 defineProps({
   msg: String
@@ -14,8 +15,16 @@ const counterStore = useCounterStore();
 // 也可以直接使用vue中的toRefs代替storeToRefs，
 const { number, age, birth } = storeToRefs(counterStore);
 const count = ref(0);
+const obj = reactive({ name: '小兰', age: 23 });
+const arr = reactive([{ one: 'apple' }]);
 const onClick = () => {
   counterStore.$state = { number: ++number.value }
+}
+const onChangeName = () => {
+  obj.age = obj.age + 1;
+};
+const onChangeArr = () => {
+  arr[0].one = 'pinia'
 }
 // DOM即将挂载
 onBeforeMount(() => {
@@ -43,7 +52,15 @@ onBeforeUnmount(() => {
 onUnmounted(() => {
   console.log('----onUnmounted----')
 })
+// 监听单个变量
+watch(arr, (newValue, oldValue) => {
+  console.log('arr', newValue, oldValue[0].one);
+})
 
+// 监听多个变量
+watch([count, obj], (newValue, oldValue) => {
+  console.log('value', newValue, oldValue);
+})
 </script>
 
 <template>
@@ -51,6 +68,15 @@ onUnmounted(() => {
 
   <div class="card">
     <button type="button" @click="count++">count is {{ count }}</button>
+    <div>
+      <button type="button" @click="onChangeName">name is{{ obj.name }},age is {{ obj.age }}</button>
+    </div>
+    <button type="button" @click="onChangeArr">
+      changeArr
+    </button>
+    <ul class="ulStyle">
+      <li v-for="item in arr">{{ item }}</li>
+    </ul>
     <p>
       Edit
       <code>components/HelloWorld.vue</code> to test HMR
@@ -70,14 +96,32 @@ onUnmounted(() => {
     in your IDE for a better DX
   </p>
   <p class="read-the-docs">Click on the Vite and Vue logos to learn more</p>
+  <MyCom>
+    <template #footer>
+      <span>
+        底部
+      </span>
+    </template>
+    <template #header>
+      <span>
+        头部
+      </span>
+    </template>
+  </MyCom>
 </template>
 
-<style scoped>
+<style scoped lang="less">
 .read-the-docs {
   color: #888;
 }
 
 .number {
   cursor: pointer;
+}
+
+.ulStyle {
+  li {
+    list-style: none;
+  }
 }
 </style>
