@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onBeforeMount, onMounted, onBeforeUpdate, onUpdated, onBeforeUnmount, onUnmounted, watch, reactive } from 'vue'
+import { ref, onBeforeMount, onMounted, onBeforeUpdate, onUpdated, onBeforeUnmount, onUnmounted, watch, reactive, watchEffect, computed } from 'vue'
 import { storeToRefs } from 'pinia';
 import { useCounterStore } from '../store/counter';
 import MyCom from './MyCom.vue';
@@ -15,10 +15,38 @@ const counterStore = useCounterStore();
 // 也可以直接使用vue中的toRefs代替storeToRefs，
 const { number, age, birth } = storeToRefs(counterStore);
 const count = ref(0);
+const btn2 = ref(null);
 const obj = reactive({ name: '小兰', age: 23 });
 const arr = reactive([{ one: 'apple' }]);
+let num2 = computed(() => count.value + 3);
+
+// 节流
+function throttle(fn, delay) {
+  let flag = true;
+  return function () {
+    if (flag) {
+      flag = false;
+      fn();
+      setTimeout(() => {
+        flag = true;
+      }, delay)
+    }
+  }
+}
+// 防抖
+function debounce(fn, delay) {
+  let timer = null;
+  return function () {
+    if (timer) {
+      clearTimeout(timer)
+    }
+    timer = setTimeout(
+      fn, delay)
+  }
+}
+const csl = () => { console.log(11111) };
 const onClick = () => {
-  counterStore.$state = { number: ++number.value }
+  counterStore.$state = { number: ++number.value };
 }
 const onChangeName = () => {
   obj.age = obj.age + 1;
@@ -35,7 +63,18 @@ onBeforeMount(() => {
 onMounted(() => {
   // counterStore.login({ payload: { userName: 'admin', passWord: 'bGlkaUAxMjM=' } });
   console.log('----onMounted----')
+
+  // 监听事件
+  // 页面缩放时触发
+  window.addEventListener('resize', () => { console.log(7777) });
+  // 按钮点击（防抖)
+  let btn = document.getElementById('btn');//用getElementById获取dom
+  console.log('btn: ', btn);
+  btn.addEventListener('click', debounce(csl, 1000), false);
+  console.log(btn2.value, 'btn2') // 用ref直接绑定dom
+  btn2.value.addEventListener('click', debounce(csl, 1000), false);
 })
+
 // DOM即将更新
 onBeforeUpdate(() => {
   console.log('----onBeforeUpdate----')
@@ -69,9 +108,10 @@ watch([count, obj], (newValue, oldValue) => {
   <div class="card">
     <button type="button" @click="count++">count is {{ count }}</button>
     <div>
-      <button type="button" @click="onChangeName">name is{{ obj.name }},age is {{ obj.age }}</button>
+      <button id="btn" type="button" @click="onChangeName">name is{{ obj.name }},age is {{ obj.age }}</button>
     </div>
-    <button type="button" @click="onChangeArr">
+    <div>{{ plusOne }}</div>
+    <button type="button" @click="onChangeArr" ref="btn2">
       changeArr
     </button>
     <ul class="ulStyle">
@@ -81,7 +121,7 @@ watch([count, obj], (newValue, oldValue) => {
       Edit
       <code>components/HelloWorld.vue</code> to test HMR
     </p>
-    <p @click="onClick" class="number">{{ number }}</p>
+    <p @click="onClick" class="number">number:{{ number }}</p>
   </div>
 
   <div><span>生日: {{ birth }} , 年龄: {{ age }}</span></div>
@@ -96,6 +136,7 @@ watch([count, obj], (newValue, oldValue) => {
     in your IDE for a better DX
   </p>
   <p class="read-the-docs">Click on the Vite and Vue logos to learn more</p>
+  <div>num2:{{ num2 }}</div>
   <MyCom>
     <template #footer>
       <span>
