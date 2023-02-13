@@ -3,10 +3,6 @@ import { cloneDeep, isEmpty } from 'lodash';
 import pathToRegexp from 'path-to-regexp';
 // import { message } from 'antd';
 // import { httpPort } from '@/utils/config';
-// import {
-//   CANCEL_REQUEST_MESSAGE,
-//   ERROR_REQUEST_MESSAGE,
-// } from '@/utils/constant';
 import qs from 'qs';
 
 const { CancelToken } = axios;
@@ -26,6 +22,8 @@ const NOT_BUSINESS_DOCUMENT_ERROR = 9008; // 数据未查询到
 const NOT_LOGIN_ERROR = 9009; // 数据未查询到
 const USER_NOT_EXIST = 90020; // 用户不存在
 const USER_STOP_USING = 90021; // 用户已停用
+const CANCEL_REQUEST_MESSAGE = 'cancle request';
+const ERROR_REQUEST_MESSAGE = 'Network Error';
 /* eslint-enable */
 
 /**
@@ -36,6 +34,7 @@ const USER_STOP_USING = 90021; // 用户已停用
  * @returns {Promise} 请求结果
  */
 // eslint-disable-next-line max-lines-per-function
+
 export default function request(options) {
   const { data, url, method = 'get' } = options;
 
@@ -44,14 +43,11 @@ export default function request(options) {
   }
 
   const cloneData = cloneDeep(data);
-  console.log('cloneData: ', cloneData);
   const newUrl = matchRestfulUrl(url, cloneData);
-  console.log('newUrl: ', newUrl);
-
-  options.url =
-    method.toLocaleLowerCase() === 'get'
-      ? `${newUrl}${isEmpty(cloneData) ? '' : '?'}${qs.stringify(cloneData)}`
-      : newUrl;
+  // options.url =
+  //   method.toLocaleLowerCase() === 'get'
+  //     ? `${newUrl}${isEmpty(cloneData) ? '' : '?'}${qs.stringify(cloneData)}`
+  //     : newUrl;
 
   options.cancelToken = new CancelToken(cancel => {
     window.cancelRequest.set(Symbol(Date.now()), {
@@ -61,106 +57,116 @@ export default function request(options) {
   });
 
   options.headers = { 'X-Request-Type': 'ajax' };
+  console.log('options: ', options);
   return axios(options)
     .then(response => {
       console.log('response: ', response);
-  // if (options.responseType === 'blob') {
-  //   let hearder = response.headers['content-type'];
-  //   if (!hearder) {
-  //     return {
-  //       success: true,
-  //       data: response.data,
-  //     };
-  //   } else if (hearder.indexOf('application/json') !== -1) {
-  //     const reader = new FileReader();
+      if (options.responseType === 'blob') {
+        let hearder = response.headers['content-type'];
+        if (!hearder) {
+          return {
+            success: true,
+            data: response.data,
+          };
+        } else if (hearder.indexOf('application/json') !== -1) {
+          const reader = new FileReader();
 
-  //     reader.onload = event => {
-  //       const content = reader.result;
-  //       const contentObj = JSON.parse(content);
-  //       if (contentObj.code === NOT_LOGIN_ERROR) {
-  //         message.error(contentObj.msg);
-  //         if (process.env.NODE_ENV === 'development') {
-  //           router.push('/admin');
-  //         } else {
-  //           router.push('/login');
-  //           // window.location.replace(`http://${hostname}:${hpptsPort}`);
-  //         }
-  //         // throw new Error()
-  //         // throw new Error(msg);
-  //       } else {
-  //         message.error(contentObj.msg);
-  //       }
-  //     };
+          reader.onload = event => {
+            const content = reader.result;
+            const contentObj = JSON.parse(content);
+            if (contentObj.code === NOT_LOGIN_ERROR) {
+              message.error(contentObj.msg);
+              if (process.env.NODE_ENV === 'development') {
+                router.push('/admin');
+              } else {
+                router.push('/login');
+                // window.location.replace(`http://${hostname}:${hpptsPort}`);
+              }
+              // throw new Error()
+              // throw new Error(msg);
+            } else {
+              message.error(contentObj.msg);
+            }
+          };
 
-  //     reader.readAsText(response.data);
-  //     return {
-  //       success: false,
-  //     };
-  //   } else {
-  //     return {
-  //       success: true,
-  //       data: response.data,
-  //     };
-  //   }
-  // }
-  // const { success, code, msg, value } = response.data;
+          reader.readAsText(response.data);
+          return {
+            success: false,
+          };
+        } else {
+          return {
+            success: true,
+            data: response.data,
+          };
+        }
+      }
+      const { success, code, msg, value } = response.data;
 
-  // if (!success) {
-  //   if (code === NOT_LOGIN_ERROR) {
-  //     message.error(msg);
-  //     if (process.env.NODE_ENV === 'development') {
-  //       router.push('/admin');
-  //     } else {
-  //       router.push('/login');
-  //     }
-  //   } else if (protocol === 'https:' && (code === USER_NOT_EXIST || code === USER_STOP_USING)) {
-  //     const { hostname } = window.location;
-  //     setTimeout(() => window.location.replace(`http://${hostname}:${httpPort}`), 1500);
-  //   }
-  //   throw new Error(msg);
-  // } else {
-  //   return Promise.resolve({
-  //     success: success,
-  //     message: msg,
-  //     statusCode: code,
-  //     data: value || {},
-  //   });
-  // }
-  // })
-  // .catch(error => {
-  //   console.log('error: ', error);
-  // const { response } = error;
-  // if (String(error.message) === CANCEL_REQUEST_MESSAGE) {
-  //   return {
-  //     success: false,
-  //     message: CANCEL_REQUEST_MESSAGE,
-  //   };
-  // }
-  // let msg;
-  // let statusCode;
-  // if (response && response instanceof Object) {
-  //   const { data, statusText } = response;
-  //   statusCode = response.status;
-  //   msg = data.message || statusText;
-  // } else {
-  //   statusCode = 600;
-  //   msg = error.message;
-  // }
+      if (!success) {
+        // if (code === NOT_LOGIN_ERROR) {
+        //   message.error(msg);
+        //   if (process.env.NODE_ENV === 'development') {
+        //     router.push('/admin');
+        //   } else {
+        //     router.push('/login');
+        //   }
+        // } else if (protocol === 'https:' && (code === USER_NOT_EXIST || code === USER_STOP_USING)) {
+        //   const { hostname } = window.location;
+        //   setTimeout(() => window.location.replace(`http://${hostname}:${httpPort}`), 1500);
+        // }
+        // throw new Error(msg);
+      } else {
+        console.log('value: ', value);
+        return Promise.resolve({
+          success: success,
+          message: msg,
+          statusCode: code,
+          data: value || {},
+        });
+      }
+    })
+    .catch(error => {
+      console.log('error: ', error);
+      const { response } = error;
+      if (String(error.message) === CANCEL_REQUEST_MESSAGE) {
+        return {
+          success: false,
+          message: CANCEL_REQUEST_MESSAGE,
+        };
+      }
+      let msg;
+      let statusCode;
+      if (response && response instanceof Object) {
+        const { data, statusText } = response;
+        statusCode = response.status;
+        msg = data.message || statusText;
+      } else {
+        statusCode = 600;
+        msg = error.message;
+      }
 
-  // if (!msg || msg.length <= 0) {
-  //   msg = ERROR_REQUEST_MESSAGE;
-  // }
+      if (!msg || msg.length <= 0) {
+        msg = ERROR_REQUEST_MESSAGE;
+      }
 
-  // Message.destroy();
-  // message.error(msg);
-  return {
-    success: false,
-    statusCode,
-    message: msg,
-  };
-  });
+      // Message.destroy();
+      // message.error(msg);
+      return {
+        success: false,
+        statusCode,
+        message: msg,
+      };
+    });
 }
 
+
+
+export function setToken(token) {
+  if (!token) {
+    return;
+  }
+  axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+}
 /**
  * 正则匹配restful风格请求并替换对应参数，返回新的url
  * eg: /:id/get, data参数保证必须有id属性

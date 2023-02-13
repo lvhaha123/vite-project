@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
+import { setToken } from "@/utils/request";
 import api from '../services';
-const { login } = api;
+const { login, getList } = api;
 export const useCounterStore = defineStore('counterStore', {
   state: () => {
     return {
@@ -17,8 +18,17 @@ export const useCounterStore = defineStore('counterStore', {
   },
   // 修改state
   actions: {
-    login({ payload }) {
-      login(payload);
-    }
+    async login({ payload }) {
+      const res = await login(payload);
+      if (res.success) {
+        sessionStorage.setItem("token", res.data.token);
+        setToken(res.data.token);
+      }
+      return res;
+    },
+    async getList({ payload }) {
+      const res = await getList(payload);
+      return res;
+    },
   },
 })

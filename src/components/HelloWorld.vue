@@ -20,6 +20,10 @@ const obj = reactive({ name: '小兰', age: 23 });
 const arr = reactive([{ one: 'apple' }]);
 let num2 = computed(() => count.value + 3);
 
+let tableData = reactive([]);
+
+//直接调用请求方法
+
 // 节流
 function throttle(fn, delay) {
   let flag = true;
@@ -60,10 +64,12 @@ onBeforeMount(() => {
 })
 
 // DOM挂载完毕（一般数据请求在这里写）
-onMounted(() => {
-  // counterStore.login({ payload: { userName: 'admin', passWord: 'bGlkaUAxMjM=' } });
+onMounted(async() => {
+  const res = await counterStore.login({ payload: { userName: 'admin', passWord: 'bGlkaUAxMjM=' } });
+  console.log('res: ', res);
+  const res11= await counterStore.getList({ payload: { userName: 'admin', passWord: 'bGlkaUAxMjM=' } });
+  console.log('res11: ', res11);
   console.log('----onMounted----')
-
   // 监听事件
   // 页面缩放时触发
   window.addEventListener('resize', () => { console.log(7777) });
