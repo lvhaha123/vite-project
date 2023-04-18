@@ -6,6 +6,9 @@ export const useCounterStore = defineStore('counterStore', {
   state: () => {
     return {
       number: 10,
+      num: {
+        number: 6,
+      },
       birth: '1993-10-16',
     };
   },
@@ -21,7 +24,7 @@ export const useCounterStore = defineStore('counterStore', {
     async login({ payload }) {
       const res = await login(payload);
       if (res.success) {
-        sessionStorage.setItem("token", res.data.token);
+        localStorage.setItem("token", res.data.token);
         setToken(res.data.token);
       }
       return res;

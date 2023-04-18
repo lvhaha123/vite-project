@@ -13,12 +13,12 @@ const counterStore = useCounterStore();
 // storeToRefs使store中的数据在页面中变成响应式数据，页面中引用时需要用.value,
 // 如果不使用storeToRefs，可以不使用解构的方式去改变number的值，直接counterStore.number=++counterStore.number;页面中直接应用counterStore.number，也可以响应
 // 也可以直接使用vue中的toRefs代替storeToRefs，
-const { number, age, birth } = storeToRefs(counterStore);
+const { number, num, age, birth } = storeToRefs(counterStore);
 const count = ref(0);
 const btn2 = ref(null);
 const obj = reactive({ name: '小兰', age: 23 });
 const arr = reactive([{ one: 'apple' }]);
-let num2 = computed(() => count.value + 3);
+let num2 = computed(() => num.value.number + 1);
 
 let tableData = reactive([]);
 
@@ -64,10 +64,10 @@ onBeforeMount(() => {
 })
 
 // DOM挂载完毕（一般数据请求在这里写）
-onMounted(async() => {
+onMounted(async () => {
   const res = await counterStore.login({ payload: { userName: 'admin', passWord: 'bGlkaUAxMjM=' } });
   console.log('res: ', res);
-  const res11= await counterStore.getList({ payload: { userName: 'admin', passWord: 'bGlkaUAxMjM=' } });
+  const res11 = await counterStore.getList({ payload: { userName: 'admin', passWord: 'bGlkaUAxMjM=' } });
   console.log('res11: ', res11);
   console.log('----onMounted----')
   // 监听事件
@@ -112,7 +112,7 @@ watch([count, obj], (newValue, oldValue) => {
   <h1>{{ msg }}</h1>
 
   <div class="card">
-    <button type="button" @click="count++">count is {{ count }}</button>
+    <button type="button" @click="num.number++">count is {{ num.number }}</button>
     <div>
       <button id="btn" type="button" @click="onChangeName">name is{{ obj.name }},age is {{ obj.age }}</button>
     </div>
@@ -142,7 +142,7 @@ watch([count, obj], (newValue, oldValue) => {
     in your IDE for a better DX
   </p>
   <p class="read-the-docs">Click on the Vite and Vue logos to learn more</p>
-  <div>num2:{{ num2 }}</div>
+  <div style="color:red">num2:{{ num2 }}</div>
   <MyCom>
     <template #footer>
       <span>
@@ -158,6 +158,10 @@ watch([count, obj], (newValue, oldValue) => {
 </template>
 
 <style scoped lang="less">
+button {
+  background-color: #f8f3f3;
+}
+
 .read-the-docs {
   color: #888;
 }

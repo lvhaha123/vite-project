@@ -1,10 +1,57 @@
+
+<template>
+  <div class="container">
+    <el-form :inline="false" :model="loginData" class="demo-form-inline" ref="formRef">
+      <el-form-item prop="user" label="账号">
+        <el-input v-model="loginData.user" placeholder="请输入账号" />
+      </el-form-item>
+      <el-form-item prop="passWord" label="密码">
+        <el-input v-model="loginData.passWord" placeholder="请输入密码" />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="onSubmit(formRef)">登录</el-button>
+        <el-button type="primary" @click="resetForm(formRef)">重置</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
+</template>
+
+
 <script setup>
-import { onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { onMounted, reactive, ref } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { useCounterStore } from '../store/counter';
+
+const formRef = ref()
 const router = useRouter();
+// const route = useRoute();
 
 const counterStore = useCounterStore();
+const loginData = reactive({
+  user: '',
+  passWord: '',
+})
+const onSubmit = async (formEl) => {
+  if (!formEl) return
+  await formEl.validate(async (valid) => {
+    console.log('valid: ', valid);
+    console.log(loginData);
+    if (valid) {
+      const res = await counterStore.login({ payload: loginData });
+      console.log('res: ', res);
+      if (res.success) {
+        router.push('/hellowWorld');
+      }
+    } else {
+      return false;
+    }
+  })
+
+}
+const resetForm = (formEl) => {
+  if (!formEl) return
+  formEl.resetFields();
+}
 const goToHelloWorld = () => {
   // 字符串路径
   router.push('/hellowWorld');
@@ -19,16 +66,20 @@ const goToHelloWorld = () => {
 }
 
 onMounted(async () => {
-  const res = await counterStore.login({ payload: { userName: 'admin', passWord: 'bGlkaUAxMjM=' } });
+
 })
 
 </script>
-
-<template>
-  <div @click="goToHelloWorld">login</div>
-  <RouterLink to="/hellowWorld">User</RouterLink>
-</template>
-
 <style scoped>
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
+.demo-form-inline {
+  width: 20%;
+}
 </style>
