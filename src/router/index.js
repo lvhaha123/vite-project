@@ -3,7 +3,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 const routes = [{
   path: '/',
   component: () => import('../components/Index.vue'),
-  redirect:'hellowWorld',
+  redirect:'/login',
   children: [
     {
       path: 'hellowWorld',
@@ -13,7 +13,7 @@ const routes = [{
 },
 {
   path: '/login',
-  component:  () => import('../components/Login.vue'),
+  component:  () => import('@/components/Login.vue'),
 },
 {
   path: '/404',

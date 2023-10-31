@@ -2,7 +2,7 @@
 import request from '@/utils/request';
 import api from './api';
 
-const apiPrefix = import.meta.env.VITE_BASE_URL; //线上地址
+const apiPrefix = import.meta.env.VITE_APP_API_HOST; //线上地址
 console.log('apiPrefix: ', apiPrefix);
 
 const gen = params => {

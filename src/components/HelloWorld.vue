@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onBeforeMount, onMounted, onBeforeUpdate, onUpdated, onBeforeUnmount, onUnmounted, watch, reactive, watchEffect, computed } from 'vue'
-import { storeToRefs } from 'pinia';
+// import { storeToRefs } from 'pinia';
 import { useCounterStore } from '../store/counter';
 import MyCom from './MyCom.vue';
 
@@ -65,10 +65,10 @@ onBeforeMount(() => {
 
 // DOM挂载完毕（一般数据请求在这里写）
 onMounted(async () => {
-  const res = await counterStore.login({ payload: { userName: 'admin', passWord: 'bGlkaUAxMjM=' } });
-  console.log('res: ', res);
-  const res11 = await counterStore.getList({ payload: { userName: 'admin', passWord: 'bGlkaUAxMjM=' } });
-  console.log('res11: ', res11);
+  // const res = await counterStore.login({ payload: { userName: 'admin', passWord: 'bGlkaUAxMjM=' } });
+  // console.log('res: ', res);
+  // const res11 = await counterStore.getList({ payload: { userName: 'admin', passWord: 'bGlkaUAxMjM=' } });
+  // console.log('res11: ', res11);
   console.log('----onMounted----')
   // 监听事件
   // 页面缩放时触发

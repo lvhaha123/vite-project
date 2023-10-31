@@ -1,7 +1,11 @@
-
 <template>
   <div class="container">
-    <el-form :inline="false" :model="loginData" class="demo-form-inline" ref="formRef">
+    <el-form
+      :inline="false"
+      :model="loginData"
+      class="demo-form-inline"
+      ref="formRef"
+    >
       <el-form-item prop="user" label="账号">
         <el-input v-model="loginData.user" placeholder="请输入账号" />
       </el-form-item>
@@ -16,45 +20,41 @@
   </div>
 </template>
 
-
 <script setup>
-import { onMounted, reactive, ref } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
-import { useCounterStore } from '../store/counter';
+import { useCounterStore } from "../store/counter";
 
-const formRef = ref()
+const formRef = ref();
 const router = useRouter();
-// const route = useRoute();
 
 const counterStore = useCounterStore();
 const loginData = reactive({
-  user: '',
-  passWord: '',
-})
+  user: "",
+  passWord: "",
+});
 const onSubmit = async (formEl) => {
-  if (!formEl) return
-  await formEl.validate(async (valid) => {
-    console.log('valid: ', valid);
-    console.log(loginData);
-    if (valid) {
-      const res = await counterStore.login({ payload: loginData });
-      console.log('res: ', res);
-      if (res.success) {
-        router.push('/hellowWorld');
-      }
-    } else {
-      return false;
-    }
-  })
-
-}
+  ElMessage("this is a message.");
+  // if (!formEl) return;
+  // await formEl.validate(async (valid) => {
+  //   console.log("valid: ", valid);
+  //   console.log(loginData);
+  //   if (valid) {
+  //     const res = await counterStore.login({ payload: loginData });
+  //     console.log("res: ", res);
+  //     if (res.success) {
+  //       router.push("/hellowWorld");
+  //     }
+  //   } else {
+  //     return false;
+  //   }
+  // });
+};
 const resetForm = (formEl) => {
-  if (!formEl) return
+  if (!formEl) return;
   formEl.resetFields();
-}
+};
 const goToHelloWorld = () => {
   // 字符串路径
-  router.push('/hellowWorld');
+  router.push("/hellowWorld");
   // // 带有路径的对象
   // router.push({ path: '/user', query: { username: 'Jack' } })
   // router.push({ path: '/user', hash: '#team' })
@@ -63,12 +63,9 @@ const goToHelloWorld = () => {
   // router.push({ name: 'user', query: { username: 'Jack' } })
   // router.push({ name: 'user', params: { username: 'Tom' } })
   // router.push({ name: 'user', hash: '#team' })
-}
+};
 
-onMounted(async () => {
-
-})
-
+onMounted(async () => {});
 </script>
 <style scoped>
 .container {

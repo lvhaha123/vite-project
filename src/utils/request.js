@@ -7,7 +7,11 @@ import qs from 'qs';
 
 const { CancelToken } = axios;
 window.cancelRequest = new Map();
-axios.defaults.withCredentials = true;
+const instance = axios.create({
+  withCredentials: true,
+  // baseURL: import.meta.env.VITE_APP_BASE_API,
+  timeout: 30000
+})
 // axios.defaults.headers.common['x-request-type'] = 'ajax';
 
 /* eslint-disable */
@@ -44,10 +48,10 @@ export default function request(options) {
 
   const cloneData = cloneDeep(data);
   const newUrl = matchRestfulUrl(url, cloneData);
-  // options.url =
-  //   method.toLocaleLowerCase() === 'get'
-  //     ? `${newUrl}${isEmpty(cloneData) ? '' : '?'}${qs.stringify(cloneData)}`
-  //     : newUrl;
+  options.url =
+    method.toLocaleLowerCase() === 'get'
+      ? `${newUrl}${isEmpty(cloneData) ? '' : '?'}${qs.stringify(cloneData)}`
+      : newUrl;
 
   options.cancelToken = new CancelToken(cancel => {
     window.cancelRequest.set(Symbol(Date.now()), {
@@ -58,7 +62,7 @@ export default function request(options) {
 
   options.headers = { 'X-Request-Type': 'ajax' };
   console.log('options: ', options);
-  return axios(options)
+  return instance(options)
     .then(response => {
       console.log('response: ', response);
       if (options.responseType === 'blob') {

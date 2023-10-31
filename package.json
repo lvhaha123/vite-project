@@ -4,10 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "yarn dev:dev",
-    "dev:dev": "vite --mode dev",
-    "dev:test": "vite --mode test",
-    "dev:prod": "vite --mode prod",
+    "dev": "vite --mode dev",
+    "test": "vite --mode test",
+    "prod": "vite --mode prod",
     "build:dev": "vue-tsc --noEmit && vite build --mode dev",
     "build:test": "vue-tsc --noEmit && vite build --mode test",
     "build:prod": "vue-tsc --noEmit && vite build --mode prod",
@@ -23,6 +22,8 @@
     "path-to-regexp": "^3.0.0",
     "pinia": "^2.0.27",
     "qs": "^6.11.0",
+    "unplugin-auto-import": "^0.16.7",
+    "unplugin-vue-components": "^0.25.2",
     "vue": "^3.2.41",
     "vue-router": "^4.1.6"
   },

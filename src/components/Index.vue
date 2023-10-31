@@ -1,5 +1,4 @@
 <script setup>
-import { onMounted } from 'vue';
 onMounted(async () => {
 
 })
