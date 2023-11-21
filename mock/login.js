@@ -3,7 +3,7 @@ import { ResponseWarpper } from './_utils';
 
 Mock.mock('/admin/user/login', ResponseWarpper.success({
   "token": "abc",
-  "authority": [
+  "menuList": [
     {
       "path": "/order",
       "name": "Order",

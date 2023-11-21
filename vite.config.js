@@ -6,8 +6,10 @@ import AutoImport from 'unplugin-auto-import/vite';
 import Components from "unplugin-vue-components/vite";
 //引入饿了么的组件，只要安装的ep,这里就会有提示的
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
+import Icons from 'unplugin-icons/vite';
+import IconResolver from 'unplugin-icons/resolver'
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 
-// https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd())
   return {
@@ -27,8 +29,27 @@ export default defineConfig(({ mode }) => {
       dirs: ["src/components/"],
       // 如果在这里引入element-plus的组件，在main.js的文件中就可以不用引了
       // resolvers: [ElementPlusResolver()],
-    })],
+      resolvers: [IconResolver({ componentPrefix: 'icon' })] // 遇到前缀为icon自动解析
+    }),
+    Icons({
+      compiler: 'vue3',
+      autoInstall: true,
+    }),
 
+    createSvgIconsPlugin({
+      // 指定要缓存的图标文件夹
+      iconDirs: [resolve(process.cwd(), 'src/assets/svg')],
+      // 执行icon name的格式
+      symbolId: 'icon-svg-[name]'
+    })
+    ],
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: '@import "@/assets/styles/main.scss";'
+        }
+      }
+    },
     // 别名配置
     resolve: {
       alias: {
@@ -40,7 +61,7 @@ export default defineConfig(({ mode }) => {
       host: 'localhost',
       open: true,//是否自动打开浏览器
 
-      // 反向代理
+      // 反向代理,在没有固定前面的url时，可以使用反向代理
       // proxy: {
       //   [env.VITE_APP_BASE_API]: {
       //     target: env.VITE_APP_API_HOST,

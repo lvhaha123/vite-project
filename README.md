@@ -11,3 +11,6 @@ This template should help get you started developing with Vue 3 in Vite. The tem
 git remote add origin https://github.com/lvhaha123/vite-project.git
 git branch -M main
 git push -u origin main
+
+
+unplugin-icons: https://icon-sets.iconify.design/fluent-emoji/house/

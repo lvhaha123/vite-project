@@ -16,10 +16,13 @@ declare module 'vue' {
     ElInput: typeof import('element-plus/es')['ElInput']
     ElMain: typeof import('element-plus/es')['ElMain']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
+    IconBiHouseFill: typeof import('~icons/bi/house-fill')['default']
+    IconFluentEmojiHouse: typeof import('~icons/fluent-emoji/house')['default']
     Index: typeof import('./components/Index.vue')['default']
     Login: typeof import('./components/Login.vue')['default']
     MyCom: typeof import('./components/MyCom.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SvgIcon: typeof import('./components/SvgIcon.vue')['default']
   }
 }

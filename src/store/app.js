@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { setToken } from "@/utils/request";
 import api from '../services';
 const { login, getList } = api;
-export const useCounterStore = defineStore('counterStore', {
+export const appStore = defineStore('appStore', {
   state: () => {
     return {
       number: 10,
@@ -10,6 +10,7 @@ export const useCounterStore = defineStore('counterStore', {
         number: 6,
       },
       birth: '1993-10-16',
+      menuList: localStorage.getItem("menuList") || [],
     };
   },
   // 类似计算属性
@@ -22,7 +23,7 @@ export const useCounterStore = defineStore('counterStore', {
   // 修改state
   actions: {
     async login({ payload }) {
-      this.number
+      this.number = 20;
       console.log('this.number: ', this.number);
       const res = await login(payload);
       if (res.success) {

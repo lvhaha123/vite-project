@@ -17,12 +17,16 @@
         <el-button type="primary" @click="resetForm(formRef)">重置</el-button>
       </el-form-item>
     </el-form>
+    <icon-fluent-emoji-house />
+    <icon-bi-house-fill color="red" font-size="50" />
+    <IconBaseline5g color="red" />
+    <SvgIcon name="home" color="red" size="20px" />
   </div>
 </template>
 
 <script setup>
-import { useCounterStore } from "../store/counter";
-
+import { useCounterStore } from "@/store/counter";
+import IconBaseline5g from "~icons/ic/baseline-5g";
 const formRef = ref();
 const router = useRouter();
 
@@ -32,21 +36,21 @@ const loginData = reactive({
   passWord: "",
 });
 const onSubmit = async (formEl) => {
-  ElMessage("this is a message.");
-  // if (!formEl) return;
-  // await formEl.validate(async (valid) => {
-  //   console.log("valid: ", valid);
-  //   console.log(loginData);
-  //   if (valid) {
-  //     const res = await counterStore.login({ payload: loginData });
-  //     console.log("res: ", res);
-  //     if (res.success) {
-  //       router.push("/hellowWorld");
-  //     }
-  //   } else {
-  //     return false;
-  //   }
-  // });
+  // ElMessage("this is a message.");
+  if (!formEl) return;
+  await formEl.validate(async (valid) => {
+    console.log("valid: ", valid);
+    console.log(loginData);
+    if (valid) {
+      const res = await counterStore.login({ payload: loginData });
+      console.log("res: ", res);
+      if (res.success) {
+        router.push("/hellowWorld");
+      }
+    } else {
+      return false;
+    }
+  });
 };
 const resetForm = (formEl) => {
   if (!formEl) return;
@@ -65,7 +69,9 @@ const goToHelloWorld = () => {
   // router.push({ name: 'user', hash: '#team' })
 };
 
-onMounted(async () => {});
+onMounted(async () => {
+
+});
 </script>
 <style scoped>
 .container {

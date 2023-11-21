@@ -1,9 +1,9 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
 
 const routes = [{
   path: '/',
   component: () => import('../components/Index.vue'),
-  redirect:'/login',
+  redirect: '/login',
   children: [
     {
       path: 'hellowWorld',
@@ -13,25 +13,18 @@ const routes = [{
 },
 {
   path: '/login',
-  component:  () => import('@/components/Login.vue'),
+  component: () => import('/src/components/Login.vue'),
 },
 {
   path: '/404',
-  component:  () => import('../components/HelloWorld.vue'),
+  component: () => import('../components/HelloWorld.vue'),
 }
 ]
 const router = createRouter({
   // 内部提供了 history 模式的实现。为了简单起见，我们在这里使用 hash 模式。
-  history: createWebHashHistory(),
+  // history: createWebHashHistory(),
+  history: createWebHistory(),
   routes,
-})
-router.beforeEach((to, from, next) => {
-  const isLogin = localStorage.getItem("token") ? true : false;
-  if (to.path == '/login') {
-    next()
-  } else {
-    isLogin ? next() : next('/login')
-  }
 })
 
 
